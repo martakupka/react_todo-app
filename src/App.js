@@ -1,25 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { TodoApp } from './components/TodoApp';
+import { TodoList } from './components/TodoList';
 
 function App() {
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (newTodo) => {
+    setTodos([
+      ...todos,
+      newTodo,
+    ]);
+  };
+
+  const removeTodo = (todoId) => {
+    setTodos(
+      todos.filter(todo => todo.id !== todoId),
+    );
+  };
+
+  const uncompletedTodos = todos.filter(todo => !todo.completed);
+
   return (
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
 
-        <form>
+        <TodoApp addTodo={addTodo} />
+
+        {/* <form>
           <input
             type="text"
             className="new-todo"
             placeholder="What needs to be done?"
           />
-        </form>
+        </form> */}
       </header>
 
       <section className="main">
         <input type="checkbox" id="toggle-all" className="toggle-all" />
         <label htmlFor="toggle-all">Mark all as complete</label>
 
-        <ul className="todo-list">
+        {todos.length > 0
+          ? (
+            <TodoList
+              items={todos}
+              removeTodo={removeTodo}
+            />
+          )
+          : null
+        }
+
+        {/* <ul className="todo-list">
           <li>
             <div className="view">
               <input type="checkbox" className="toggle" />
@@ -55,12 +86,12 @@ function App() {
             </div>
             <input type="text" className="edit" />
           </li>
-        </ul>
+        </ul> */}
       </section>
 
       <footer className="footer">
         <span className="todo-count">
-          3 items left
+          {`${uncompletedTodos.length} items left`}
         </span>
 
         <ul className="filters">
