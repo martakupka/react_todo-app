@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TodoApp } from './components/TodoApp';
 import { TodoList } from './components/TodoList';
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [activeTodos, setActiveTodos] = useState([]);
+  const [allTogglerStatus, setAllTogglerStatus] = useState(false);
+
+  useEffect(() => {
+    setActiveTodos(todos.filter(todo => !todo.completed));
+  }, [todos]);
+
+  useEffect(() => {
+    if (todos.length > 0) {
+      setAllTogglerStatus(activeTodos.length === 0);
+    }
+  }, [activeTodos]);
 
   const addTodo = (newTodo) => {
     setTodos([
@@ -18,7 +30,40 @@ function App() {
     );
   };
 
-  const uncompletedTodos = todos.filter(todo => !todo.completed);
+  const updateTodo = (todoId) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todoId !== todo.id) {
+        return todo;
+      }
+
+      return {
+        ...todo,
+        completed: !todo.completed,
+      };
+    });
+
+    setTodos(updatedTodos);
+  };
+
+  const toggleAll = () => {
+    let updatedTodos;
+
+    if (allTogglerStatus) {
+      updatedTodos = todos.map(todo => ({
+        ...todo,
+        completed: false,
+      }));
+    } else {
+      updatedTodos = todos.map(todo => ({
+        ...todo,
+        completed: true,
+      }));
+    }
+
+    setTodos(updatedTodos);
+  };
+
+  // const uncompletedTodos = todos.filter(todo => !todo.completed);
 
   return (
     <section className="todoapp">
@@ -37,7 +82,13 @@ function App() {
       </header>
 
       <section className="main">
-        <input type="checkbox" id="toggle-all" className="toggle-all" />
+        <input
+          type="checkbox"
+          id="toggle-all"
+          className="toggle-all"
+          checked={allTogglerStatus}
+          onChange={toggleAll}
+        />
         <label htmlFor="toggle-all">Mark all as complete</label>
 
         {todos.length > 0
@@ -45,6 +96,8 @@ function App() {
             <TodoList
               items={todos}
               removeTodo={removeTodo}
+              updateTodo={updateTodo}
+              allTogglerStatus={allTogglerStatus}
             />
           )
           : null
@@ -91,7 +144,7 @@ function App() {
 
       <footer className="footer">
         <span className="todo-count">
-          {`${uncompletedTodos.length} items left`}
+          {`${activeTodos.length} items left`}
         </span>
 
         <ul className="filters">

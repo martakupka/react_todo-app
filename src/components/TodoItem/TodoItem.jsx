@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { todoType } from '../../propTypes/todoType';
 
-export const TodoItem = ({ todo, removeTodo }) => {
+export const TodoItem = ({
+  todo,
+  removeTodo,
+  updateTodo,
+  allTogglerStatus,
+}) => {
   const [completedStatus, setCompletedStatus] = useState(todo.completed);
+
+  useEffect(() => {
+    setCompletedStatus(allTogglerStatus);
+  }, [allTogglerStatus]);
 
   return (
     <li
@@ -14,8 +23,10 @@ export const TodoItem = ({ todo, removeTodo }) => {
         <input
           type="checkbox"
           className="toggle"
+          checked={completedStatus}
           onChange={() => {
-            setCompletedStatus(!completedStatus);
+            setCompletedStatus(!todo.completed);
+            updateTodo(todo.id);
           }}
         />
         <label>{todo.title}</label>
@@ -33,4 +44,6 @@ export const TodoItem = ({ todo, removeTodo }) => {
 TodoItem.propTypes = {
   todo: todoType.isRequired,
   removeTodo: PropTypes.func.isRequired,
+  updateTodo: PropTypes.func.isRequired,
+  allTogglerStatus: PropTypes.bool.isRequired,
 };
