@@ -2,22 +2,44 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { todoType } from '../../propTypes/todoType';
+import { filtersType } from '../../propTypes/filtersType';
 
 export const TodoItem = ({
   todo,
   removeTodo,
   updateTodo,
   allTogglerStatus,
+  filters,
 }) => {
   const [completedStatus, setCompletedStatus] = useState(todo.completed);
 
+  const hideTodo = () => {
+    if (
+      (filters.active && todo.completed)
+      || (filters.completed && !todo.completed)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   useEffect(() => {
-    setCompletedStatus(allTogglerStatus);
-  }, [allTogglerStatus]);
+    setCompletedStatus(todo.completed);
+  }, [allTogglerStatus, todo.completed]);
+
+  // useEffect(() => {
+  //   hideTodo();
+  // }, [filters]);
+
+  // console.log(filters);
 
   return (
     <li
-      className={classNames('', { completed: completedStatus })}
+      className={classNames('', {
+        completed: completedStatus,
+        hidden: hideTodo(),
+      })}
     >
       <div className="view">
         <input
@@ -25,7 +47,7 @@ export const TodoItem = ({
           className="toggle"
           checked={completedStatus}
           onChange={() => {
-            setCompletedStatus(!todo.completed);
+            setCompletedStatus(!completedStatus);
             updateTodo(todo.id);
           }}
         />
@@ -46,4 +68,5 @@ TodoItem.propTypes = {
   removeTodo: PropTypes.func.isRequired,
   updateTodo: PropTypes.func.isRequired,
   allTogglerStatus: PropTypes.bool.isRequired,
+  filters: filtersType.isRequired,
 };

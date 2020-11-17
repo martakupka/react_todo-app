@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { todoType } from '../../propTypes/todoType';
+import { filtersType } from '../../propTypes/filtersType';
 import { TodoItem } from '../TodoItem';
 
 export const TodoList = ({
@@ -8,6 +9,7 @@ export const TodoList = ({
   removeTodo,
   updateTodo,
   allTogglerStatus,
+  filters,
 }) => (
   <ul className="todo-list">
     {items.map(item => (
@@ -17,6 +19,7 @@ export const TodoList = ({
         removeTodo={removeTodo}
         updateTodo={updateTodo}
         allTogglerStatus={allTogglerStatus}
+        filters={filters}
       />
     ))}
   </ul>
@@ -27,4 +30,5 @@ TodoList.propTypes = {
   removeTodo: PropTypes.func.isRequired,
   updateTodo: PropTypes.func.isRequired,
   allTogglerStatus: PropTypes.bool.isRequired,
+  filters: filtersType.isRequired,
 };
