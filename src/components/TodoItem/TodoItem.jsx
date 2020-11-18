@@ -28,12 +28,6 @@ export const TodoItem = ({
     setCompletedStatus(todo.completed);
   }, [allTogglerStatus, todo.completed]);
 
-  // useEffect(() => {
-  //   hideTodo();
-  // }, [filters]);
-
-  // console.log(filters);
-
   return (
     <li
       className={classNames('', {
